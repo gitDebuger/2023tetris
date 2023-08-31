@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 public class GamePanel extends JPanel {
     private final ReturnButton exitButton;
+    private ActionListener listener;
     public GamePanel() {
         setLayout(null);
         setBackground(Color.BLACK);
@@ -18,9 +19,17 @@ public class GamePanel extends JPanel {
         label.setBackground(Color.BLACK);
         label.setForeground(Color.WHITE);
         add(label);
+        listener = null;
     }
     public void addListener(ActionListener listener) {
+        this.listener = listener;
         exitButton.addActionListener(listener);
+    }
+    public void removeListener() {
+        if (listener != null) {
+            exitButton.removeActionListener(this.listener);
+            this.listener = null;
+        }
     }
     @Override
     protected void paintComponent(Graphics g) {

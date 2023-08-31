@@ -14,9 +14,9 @@ public class MainPanel extends JPanel {
         setLayout(null);
         setBackground(Color.BLACK);
         setSize(800, 600);
-        buttonOne = new ChooseButton("Common Model", 200, 50, 300, 200);
-        buttonTwo = new ChooseButton("", 200, 50, 300, 270);
-        buttonThree = new ChooseButton("", 200, 50, 300, 340);
+        buttonOne = new ChooseButton("Common Mode", 200, 50, 300, 200);
+        buttonTwo = new ChooseButton("Racing Mode", 200, 50, 300, 270);
+        buttonThree = new ChooseButton("Random Blocks", 200, 50, 300, 340);
         buttonFour = new ChooseButton("", 200, 50, 300, 410);
         buttonExit = new ChooseButton("Exit Game", 200, 50, 300, 480);
         add(buttonOne);
@@ -34,6 +34,12 @@ public class MainPanel extends JPanel {
     }
     public void addCommon(ActionListener listener) {
         buttonOne.addActionListener(listener);
+    }
+    public void addRacing(ActionListener listener) {
+        buttonTwo.addActionListener(listener);
+    }
+    public void addRandomBlocks(ActionListener listener) {
+        buttonThree.addActionListener(listener);
     }
 }
 class ChooseButton extends JButton {

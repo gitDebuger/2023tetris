@@ -38,6 +38,22 @@ public class BlockGroup {
         }
         dropTimes = 0;
     }
+    public void randomCreateBlocks() {
+        int color = random.nextInt(Blocks.COLOR_NUM);
+        blockColor = Blocks.BLOCK_ARRAY[color];
+        col = 10;
+        int count = 0;
+        do {
+            for (var curBlock : RandomGroup.THREE_LEVEL_GROUP) {
+                if (random.nextBoolean()) {
+                    var nextBlock = new OneBlock(blockColor, curBlock[0], curBlock[1] + col);
+                    blocks.add(nextBlock);
+                    count++;
+                }
+            }
+        } while (count == 0);
+        dropTimes = 0;
+    }
     public void moveDown() {
         for (var block : blocks) {
             if (block.getY() >= MAX_Y) return;
@@ -46,6 +62,12 @@ public class BlockGroup {
             block.moveDown();
         }
         dropTimes++;
+    }
+    public void moveDown(int nLevel) {
+        for (var block : blocks) {
+            block.moveDown(nLevel);
+        }
+        dropTimes += nLevel;
     }
     public void moveLeft() {
         for (var block : blocks) {
@@ -80,6 +102,26 @@ public class BlockGroup {
         for (var curBlock : curShape[tangle]) {
             blocks.add(new OneBlock(blockColor, curBlock[0] + dropTimes, curBlock[1] + col));
         }
+    }
+    public void reCreateRandom() {
+        for (var curBlock : RandomGroup.THREE_LEVEL_GROUP) {
+            if (curBlock[0] + dropTimes >= MAX_ROW) return;
+            else if (curBlock[1] + col >= MAX_COL) return;
+            else if (existPoints.contains(new Point((curBlock[1] + col) * 20 + 80,
+                    (curBlock[0] + dropTimes) * 20 + 25))) {
+                return;
+            }
+        }
+        blocks.clear();
+        int count = 0;
+        do {
+            for (var curBlock : RandomGroup.THREE_LEVEL_GROUP) {
+                if (random.nextBoolean()) {
+                    blocks.add(new OneBlock(blockColor, curBlock[0] + dropTimes, curBlock[1] + col));
+                    count++;
+                }
+            }
+        } while (count == 0);
     }
     public boolean arriveBottom() {
         for (var block : blocks) {

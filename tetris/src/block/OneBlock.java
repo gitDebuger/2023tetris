@@ -24,6 +24,9 @@ public class OneBlock {
     public void moveDown() {
         y += 20;
     }
+    public void moveDown(int nLevel) {
+        y += nLevel * 20;
+    }
     public void moveLeft() {
         x -= 20;
     }

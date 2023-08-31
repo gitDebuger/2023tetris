@@ -16,6 +16,7 @@ public class BackToMainListener implements ActionListener {
     }
     public void actionPerformed(ActionEvent event) {
         logicPanel.stop();
+        gamePanel.removeListener();
         logicPanel.setVisible(false);
         gamePanel.setVisible(false);
         mainPanel.setVisible(true);

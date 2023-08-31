@@ -26,9 +26,9 @@ public class Main {
         logicPanel.setVisible(false);
 
         mainPanel.addExitListener(new ExitListener());
-        var backListener = new BackToMainListener(logicPanel, gamePanel, mainPanel);
-        gamePanel.addListener(backListener);
 
         mainPanel.addCommon(new CommonModeListener(mainPanel, gamePanel, logicPanel));
+        mainPanel.addRacing(new RacingModeListener(mainPanel, gamePanel, logicPanel));
+        mainPanel.addRandomBlocks(new RandomBlocksListener(mainPanel, gamePanel, logicPanel));
     }
 }
