@@ -9,22 +9,28 @@ import java.util.HashSet;
 public class BottomBlockGroup {
     private final ArrayList<OneBlock> blocks;
     private final HashSet<Point> existPoints;
+
     public BottomBlockGroup(HashSet<Point> existPoints) {
         blocks = new ArrayList<>();
         this.existPoints = existPoints;
     }
+
     public void addBlock(OneBlock block) {
         blocks.add(block);
     }
+
     public OneBlock getBlock(int index) {
         return blocks.get(index);
     }
+
     public int getBlockNum() {
         return blocks.size();
     }
+
     public void clear() {
         blocks.clear();
     }
+
     public int checkAndEliminate() {
         int eliminateRows = 0;
         int[] times = new int[Coordinate.ROWS.length];

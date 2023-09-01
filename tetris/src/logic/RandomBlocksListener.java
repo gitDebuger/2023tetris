@@ -3,6 +3,7 @@ package logic;
 import frameDisplay.BackToMainListener;
 import frameDisplay.GamePanel;
 import frameDisplay.MainPanel;
+import musicPlayer.ButtonMusicPlayer;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,7 @@ public class RandomBlocksListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
+        ButtonMusicPlayer.playButtonSound();
         EventQueue.invokeLater(() -> {
             mainPanel.setVisible(false);
             gamePanel.setVisible(true);

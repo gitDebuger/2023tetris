@@ -11,19 +11,21 @@ public class BlockGroup {
     private static final int MAX_Y = 505;
     private static final int MAX_ROW = 25;
     private static final int MAX_COL = 23;
+    private final ArrayList<OneBlock> blocks;
+    private final HashSet<Point> existPoints;
+    private final Random random;
     private String blockColor;
     private int[][][] curShape;
     private int tangle;
     private int dropTimes;
     private int col;
-    private final ArrayList<OneBlock> blocks;
-    private final HashSet<Point> existPoints;
-    private final Random random;
+
     public BlockGroup(HashSet<Point> existPoints) {
         blocks = new ArrayList<>();
         random = new Random();
         this.existPoints = existPoints;
     }
+
     public void createBlocks() {
         int color = random.nextInt(Blocks.COLOR_NUM);
         blockColor = Blocks.BLOCK_ARRAY[color];
@@ -38,6 +40,7 @@ public class BlockGroup {
         }
         dropTimes = 0;
     }
+
     public void randomCreateBlocks() {
         int color = random.nextInt(Blocks.COLOR_NUM);
         blockColor = Blocks.BLOCK_ARRAY[color];
@@ -54,6 +57,7 @@ public class BlockGroup {
         } while (count == 0);
         dropTimes = 0;
     }
+
     public void moveDown() {
         for (var block : blocks) {
             if (block.getY() >= MAX_Y) return;
@@ -63,12 +67,14 @@ public class BlockGroup {
         }
         dropTimes++;
     }
+
     public void moveDown(int nLevel) {
         for (var block : blocks) {
             block.moveDown(nLevel);
         }
         dropTimes += nLevel;
     }
+
     public void moveLeft() {
         for (var block : blocks) {
             if (block.getX() <= MIN_X) return;
@@ -78,6 +84,7 @@ public class BlockGroup {
         }
         col--;
     }
+
     public void moveRight() {
         for (var block : blocks) {
             if (block.getX() >= MAX_X) return;
@@ -87,6 +94,7 @@ public class BlockGroup {
         }
         col++;
     }
+
     public void rotate() {
         int nextTangle = (tangle == curShape.length - 1) ? 0 : (tangle + 1);
         for (var curBlock : curShape[nextTangle]) {
@@ -103,6 +111,7 @@ public class BlockGroup {
             blocks.add(new OneBlock(blockColor, curBlock[0] + dropTimes, curBlock[1] + col));
         }
     }
+
     public void reCreateRandom() {
         for (var curBlock : RandomGroup.THREE_LEVEL_GROUP) {
             if (curBlock[0] + dropTimes >= MAX_ROW) return;
@@ -123,54 +132,69 @@ public class BlockGroup {
             }
         } while (count == 0);
     }
+
     public boolean arriveBottom() {
         for (var block : blocks) {
             if (block.getY() >= MAX_Y) return true;
         }
         return false;
     }
+
     public OneBlock getBlock(int index) {
         if (index >= blocks.size()) {
             return null;
         }
         return blocks.get(index);
     }
+
     public void addBlock(OneBlock block) {
         blocks.add(block);
     }
+
     public int getBlockNum() {
         return blocks.size();
     }
+
     public String getBlockColor() {
         return blockColor;
     }
+
     public void setBlockColor(String blockColor) {
         this.blockColor = blockColor;
     }
+
     public int getCol() {
         return col;
     }
+
     public void setCol(int col) {
         this.col = col;
     }
+
     public int getDropTimes() {
         return dropTimes;
     }
+
     public void setDropTimes(int dropTimes) {
         this.dropTimes = dropTimes;
     }
+
     public int[][][] getCurShape() {
         return curShape;
     }
+
     public void setCurShape(int[][][] curShape) {
         this.curShape = curShape;
     }
+
     public int getTangle() {
         return tangle;
     }
+
     public void setTangle(int tangle) {
         this.tangle = tangle;
     }
+
     public void clear() {
         blocks.clear();
     }

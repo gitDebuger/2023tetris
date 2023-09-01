@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 public class GamePanel extends JPanel {
     private final ReturnButton exitButton;
     private ActionListener listener;
+
     public GamePanel() {
         setLayout(null);
         setBackground(Color.BLACK);
@@ -21,16 +22,19 @@ public class GamePanel extends JPanel {
         add(label);
         listener = null;
     }
+
     public void addListener(ActionListener listener) {
         this.listener = listener;
         exitButton.addActionListener(listener);
     }
+
     public void removeListener() {
         if (listener != null) {
             exitButton.removeActionListener(this.listener);
             this.listener = null;
         }
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -39,11 +43,12 @@ public class GamePanel extends JPanel {
 
         Graphics2D g2d = (Graphics2D) g;
         var dashedStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 0,
-                new float[]{5, 5},0);
+                new float[]{5, 5}, 0);
         g2d.setStroke(dashedStroke);
         g2d.drawLine(80, 105, 540, 105);
     }
 }
+
 class ReturnButton extends JButton {
     public ReturnButton(String text, int width, int height, int putX, int putY) {
         setText(text);

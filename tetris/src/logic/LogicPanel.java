@@ -1,24 +1,31 @@
 package logic;
 
-import block.*;
+import block.BlockGroup;
+import block.BottomBlockGroup;
+import musicPlayer.GetScoreMusicPlayer;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.HashSet;
 
 public class LogicPanel extends JPanel {
     private final BlockGroup droppingBlocks;
     private final BlockGroup nextBlocks;
     private final BottomBlockGroup bottomBlocks;
-    private Timer dropTimer;
-    private Timer createTimer;
-    private KeyListener keyListener;
     private final HashSet<Point> points;
     private final ScoreLabel scoreLabel;
-    private int score;
     private final JFrame parentFrame;
     private final JPanel gamePanel;
     private final JPanel mainPanel;
+    private Timer dropTimer;
+    private Timer createTimer;
+    private KeyListener keyListener;
+    private int score;
+
     public LogicPanel(JFrame parentFrame, JPanel gamePanel, JPanel mainPanel) {
         this.parentFrame = parentFrame;
         this.mainPanel = mainPanel;
@@ -34,6 +41,7 @@ public class LogicPanel extends JPanel {
         add(scoreLabel);
         score = 0;
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -50,14 +58,7 @@ public class LogicPanel extends JPanel {
             g.drawImage(curBlock.getBlock(), curBlock.getX() + 355, curBlock.getY() + 80, null);
         }
     }
-    private class DropAction implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            if (canDrop()) {
-                droppingBlocks.moveDown();
-                repaint();
-            }
-        }
-    }
+
     private boolean canDrop() {
         for (int i = 0; i < droppingBlocks.getBlockNum(); i++) {
             if (points.contains(new Point(droppingBlocks.getBlock(i).getX(),
@@ -67,13 +68,16 @@ public class LogicPanel extends JPanel {
         }
         return true;
     }
+
     private void updateScore() {
         int delta = bottomBlocks.checkAndEliminate();
         if (delta > 0) {
+            GetScoreMusicPlayer.playScoreMusic();
             score += 2 * delta - 1;
         }
         scoreLabel.setText("Score: %d".formatted(score));
     }
+
     private void checkIfLose() {
         for (int i = 0; i < bottomBlocks.getBlockNum(); i++) {
             if (bottomBlocks.getBlock(i).getY() < 105) {
@@ -99,28 +103,7 @@ public class LogicPanel extends JPanel {
             }
         }
     }
-    private class CreateAction implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            if (droppingBlocks.arriveBottom() || !canDrop()) {
-                moveBlocks();
-                nextBlocks.createBlocks();
-                updateScore();
-                repaint();
-                checkIfLose();
-            }
-        }
-    }
-    private class RandomCreateAction implements ActionListener {
-        public void actionPerformed(ActionEvent event) {
-            if (droppingBlocks.arriveBottom() || !canDrop()) {
-                moveBlocks();
-                nextBlocks.randomCreateBlocks();
-                updateScore();
-                repaint();
-                checkIfLose();
-            }
-        }
-    }
+
     public void reInitial(KeyListener listener, Timer dropTimer, Timer createTimer) {
         keyListener = listener;
         addKeyListener(keyListener);
@@ -129,6 +112,7 @@ public class LogicPanel extends JPanel {
         this.dropTimer = dropTimer;
         this.createTimer = createTimer;
     }
+
     public void commonMode() {
         reInitial(new KeyIncidence(droppingBlocks, this, points),
                 new Timer(500, new DropAction()),
@@ -139,6 +123,7 @@ public class LogicPanel extends JPanel {
         dropTimer.start();
         createTimer.start();
     }
+
     public void racingMode() {
         reInitial(new RacingControlListener(droppingBlocks, bottomBlocks, points, this),
                 new Timer(100, new DropAction()),
@@ -149,6 +134,7 @@ public class LogicPanel extends JPanel {
         dropTimer.start();
         createTimer.start();
     }
+
     public void randomBlocks() {
         reInitial(new RandomControlListener(droppingBlocks, this, points),
                 new Timer(500, new DropAction()),
@@ -159,6 +145,7 @@ public class LogicPanel extends JPanel {
         dropTimer.start();
         createTimer.start();
     }
+
     private void moveBlocks() {
         for (int i = 0; i < droppingBlocks.getBlockNum(); i++) {
             var curBlock = droppingBlocks.getBlock(i);
@@ -176,6 +163,7 @@ public class LogicPanel extends JPanel {
         droppingBlocks.setCurShape(nextBlocks.getCurShape());
         nextBlocks.clear();
     }
+
     public void stop() {
         if (dropTimer != null) {
             dropTimer.stop();
@@ -194,16 +182,52 @@ public class LogicPanel extends JPanel {
         points.clear();
         repaint();
     }
+
+    private class DropAction implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            if (canDrop()) {
+                droppingBlocks.moveDown();
+                repaint();
+            }
+        }
+    }
+
+    private class CreateAction implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            if (droppingBlocks.arriveBottom() || !canDrop()) {
+                moveBlocks();
+                nextBlocks.createBlocks();
+                updateScore();
+                repaint();
+                checkIfLose();
+            }
+        }
+    }
+
+    private class RandomCreateAction implements ActionListener {
+        public void actionPerformed(ActionEvent event) {
+            if (droppingBlocks.arriveBottom() || !canDrop()) {
+                moveBlocks();
+                nextBlocks.randomCreateBlocks();
+                updateScore();
+                repaint();
+                checkIfLose();
+            }
+        }
+    }
 }
+
 class KeyIncidence implements KeyListener {
     private final BlockGroup group;
     private final HashSet<Point> points;
     private final JPanel panel;
+
     public KeyIncidence(BlockGroup group, JPanel panel, HashSet<Point> points) {
         this.group = group;
         this.panel = panel;
         this.points = points;
     }
+
     public void keyPressed(KeyEvent event) {
         int key = event.getKeyCode();
         if (key == Keyboard.DOWN || key == Keyboard.S) {
@@ -213,50 +237,46 @@ class KeyIncidence implements KeyListener {
                 }
             }
             group.moveDown();
-        }
-        else if (key == Keyboard.LEFT || key == Keyboard.A) {
+        } else if (key == Keyboard.LEFT || key == Keyboard.A) {
             for (int i = 0; i < group.getBlockNum(); i++) {
                 if (points.contains(new Point(group.getBlock(i).getX() - 20, group.getBlock(i).getY()))) {
                     return;
                 }
             }
             group.moveLeft();
-        }
-        else if (key == Keyboard.RIGHT || key == Keyboard.D) {
+        } else if (key == Keyboard.RIGHT || key == Keyboard.D) {
             for (int i = 0; i < group.getBlockNum(); i++) {
                 if (points.contains(new Point(group.getBlock(i).getX() + 20, group.getBlock(i).getY()))) {
                     return;
                 }
             }
             group.moveRight();
-        }
-        else if (key == Keyboard.W || key == Keyboard.UP) {
+        } else if (key == Keyboard.W || key == Keyboard.UP) {
             group.rotate();
         }
         panel.repaint();
     }
-    public void keyReleased(KeyEvent event) {}
-    public void keyTyped(KeyEvent event) {}
-}
-class ScoreLabel extends JLabel {
-    public ScoreLabel() {
-        setBounds(600, 200, 150, 50);
-        setBackground(Color.BLACK);
-        setForeground(Color.WHITE);
-        setFont(new Font(Font.MONOSPACED, Font.ITALIC + Font.BOLD, 20));
+
+    public void keyReleased(KeyEvent event) {
+    }
+
+    public void keyTyped(KeyEvent event) {
     }
 }
+
 class RacingControlListener implements KeyListener {
     private final BlockGroup group;
     private final BottomBlockGroup bottomGroup;
     private final HashSet<Point> points;
     private final JPanel panel;
+
     public RacingControlListener(BlockGroup group, BottomBlockGroup bottomGroup, HashSet<Point> points, JPanel panel) {
         this.group = group;
         this.bottomGroup = bottomGroup;
         this.points = points;
         this.panel = panel;
     }
+
     @Override
     public void keyPressed(KeyEvent event) {
         int key = event.getKeyCode();
@@ -267,19 +287,16 @@ class RacingControlListener implements KeyListener {
                 }
             }
             group.moveLeft();
-        }
-        else if (key == Keyboard.RIGHT || key == Keyboard.D) {
+        } else if (key == Keyboard.RIGHT || key == Keyboard.D) {
             for (int i = 0; i < group.getBlockNum(); i++) {
                 if (points.contains(new Point(group.getBlock(i).getX() + 20, group.getBlock(i).getY()))) {
                     return;
                 }
             }
             group.moveRight();
-        }
-        else if (key == Keyboard.UP || key == Keyboard.W) {
+        } else if (key == Keyboard.UP || key == Keyboard.W) {
             group.rotate();
-        }
-        else if (key == Keyboard.DOWN || key == Keyboard.S) {
+        } else if (key == Keyboard.DOWN || key == Keyboard.S) {
             int minLevel = Integer.MAX_VALUE;
             for (int i = 0; i < group.getBlockNum(); i++) {
                 int curX = group.getBlock(i).getX();
@@ -296,20 +313,27 @@ class RacingControlListener implements KeyListener {
         }
         panel.repaint();
     }
+
     @Override
-    public void keyReleased(KeyEvent event) {}
+    public void keyReleased(KeyEvent event) {
+    }
+
     @Override
-    public void keyTyped(KeyEvent event) {}
+    public void keyTyped(KeyEvent event) {
+    }
 }
+
 class RandomControlListener implements KeyListener {
     private final BlockGroup group;
     private final HashSet<Point> points;
     private final JPanel panel;
+
     public RandomControlListener(BlockGroup group, JPanel panel, HashSet<Point> points) {
         this.group = group;
         this.panel = panel;
         this.points = points;
     }
+
     public void keyPressed(KeyEvent event) {
         int key = event.getKeyCode();
         if (key == Keyboard.DOWN || key == Keyboard.S) {
@@ -319,28 +343,29 @@ class RandomControlListener implements KeyListener {
                 }
             }
             group.moveDown();
-        }
-        else if (key == Keyboard.LEFT || key == Keyboard.A) {
+        } else if (key == Keyboard.LEFT || key == Keyboard.A) {
             for (int i = 0; i < group.getBlockNum(); i++) {
                 if (points.contains(new Point(group.getBlock(i).getX() - 20, group.getBlock(i).getY()))) {
                     return;
                 }
             }
             group.moveLeft();
-        }
-        else if (key == Keyboard.RIGHT || key == Keyboard.D) {
+        } else if (key == Keyboard.RIGHT || key == Keyboard.D) {
             for (int i = 0; i < group.getBlockNum(); i++) {
                 if (points.contains(new Point(group.getBlock(i).getX() + 20, group.getBlock(i).getY()))) {
                     return;
                 }
             }
             group.moveRight();
-        }
-        else if (key == Keyboard.W || key == Keyboard.UP) {
+        } else if (key == Keyboard.W || key == Keyboard.UP) {
             group.reCreateRandom();
         }
         panel.repaint();
     }
-    public void keyReleased(KeyEvent event) {}
-    public void keyTyped(KeyEvent event) {}
+
+    public void keyReleased(KeyEvent event) {
+    }
+
+    public void keyTyped(KeyEvent event) {
+    }
 }
