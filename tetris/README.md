@@ -32,13 +32,13 @@
 
 |                          方块                          |         功能描述         |
 | :----------------------------------------------------: | :----------------------: |
-|         ![left](E:\Java\tetris\image\left.png)         | 消除其本身及左侧所有方块 |
-|        ![right](E:\Java\tetris\image\right.png)        | 消除其本身及右侧所有方块 |
-| ![leftAndRight](E:\Java\tetris\image\leftAndRight.png) |   消除其所在行所有方块   |
-|           ![up](E:\Java\tetris\image\up.png)           | 消除其本身及上方所有方块 |
-|         ![down](E:\Java\tetris\image\down.png)         | 消除其本身及下方所有方块 |
-|    ![upAndDown](E:\Java\tetris\image\upAndDown.png)    |   消除其所在列所有方块   |
-|         ![boom](E:\Java\tetris\image\boom.png)         |    消除屏幕中所有方块    |
+|         ![left](image\left.png)         | 消除其本身及左侧所有方块 |
+|        ![right](image\right.png)        | 消除其本身及右侧所有方块 |
+| ![leftAndRight](image\leftAndRight.png) |   消除其所在行所有方块   |
+|           ![up](image\up.png)           | 消除其本身及上方所有方块 |
+|         ![down](image\down.png)         | 消除其本身及下方所有方块 |
+|    ![upAndDown](image\upAndDown.png)    |   消除其所在列所有方块   |
+|         ![boom](image\boom.png)         |    消除屏幕中所有方块    |
 
 消除会在包含这些特殊方块的方块组落地时进行。
 
